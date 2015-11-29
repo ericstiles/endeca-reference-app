@@ -185,11 +185,22 @@
 											<div class="row">
 												<div class="col-sm-12 col-md-12 col-lg-12">
 													<h3>${record.spec }</h3>
-													<h4>Associated Dimensions</h4>
 													<ol>
 														<c:forEach var="property" items="${record.properties}"
 															varStatus="status">
-															<ul><font face="Arial" color="gray">${property.key}:</font> ${property.value }
+															<ul>
+																<font face="Arial" color="gray">${property.key}:</font>
+																${property.value }
+															</ul>
+														</c:forEach>
+													</ol>
+													<h4>Associated Dimensions</h4>
+													<ol>
+														<c:forEach var="assocDimension" items="${record.dimValues}"
+															varStatus="status">
+															<ul>
+																<font face="Arial" color="gray">${assocDimension[0].dimValue.dimensionName }:</font>
+																${assocDimension[0].dimValue.name }
 															</ul>
 														</c:forEach>
 													</ol>

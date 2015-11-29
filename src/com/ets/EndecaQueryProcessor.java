@@ -83,8 +83,8 @@ public class EndecaQueryProcessor {
 
 		//Left over from running command line.  
 		//Remove as functionality is added on jsp page
-		//print(qr);
-		//System.out.println(sb.toString());
+		print(qr);
+		System.out.println(sb.toString());
 
 	}
 

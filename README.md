@@ -1,6 +1,6 @@
 # endeca-reference-app
 
-## TL;DR;
+## TL;DR
 
 My own spin on implementing an Oracle Endeca reference application built as an opportunity to learn the Endeca API.
 Requires in lib folder following jar files:

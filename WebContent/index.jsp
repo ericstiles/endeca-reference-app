@@ -148,7 +148,7 @@
 							<div class="col-sm-7 col-md-7 col-lg-8">
 								<div class="row">
 									<div class="col-sm-12 col-md-12 col-lg-12">
-										<c:forEach var="uidim" items="${bean.list1}">
+										<c:forEach var="uidim" items="${bean.refinementsList}">
 											<div class="row">
 												<div class="col-sm-12 col-md-12 col-lg-12">
 													<a
@@ -174,39 +174,117 @@
 												<c:out value="${bean.recordCount }" />
 											</div>
 										</div>
-										<div class="row">
-											<div class="col-sm-12 col-md-12 col-lg-12">
-												<br>
-												<!-- SPACER -->
+										<div class="col-sm-12 col-md-12 col-lg-12">
+											<div class="row">
+
+
+
+												<c:set var="p" value="${bean.currentPage}" />
+												<%-- current page (1-based) --%>
+												<c:set var="l" value="${4 }" />
+												<%-- amount of page links to be displayed --%>
+												<c:set var="r" value="${2}" />
+												<%-- minimum link range ahead/behind --%>
+												<c:set var="t" value="${bean.numberOfPages}" />
+												<%-- total amount of pages --%>
+
+												<c:set var="begin"
+													value="${((p - r) > 0 ? ((p - r) < (t - l + 1) ? (p - r) : (t - l)) : 0) + 1}" />
+												<c:set var="end"
+													value="${((p + r) < t ? ((p + r) > l ? (p + r) : l) : t) + 1}" />
+												<c:if test="${end > bean.numberOfPages }">
+													<c:set var="end" value="${bean.numberOfPages }" />
+												</c:if>
+
+												<ul class="pagination">
+													<c:if test="${bean.currentPage == 0 }">
+														<li class="disabled"><a
+															href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=0 ">first</a></li>
+													</c:if>
+													<c:if test="${bean.currentPage > 0 }">
+														<li><a href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=0 ">first</a></li>
+													</c:if>
+													<c:forEach begin="${begin}" end="${end}" var="page">
+
+														<c:if test="${bean.currentPage == (page - 1) }">
+															<c:set value="active" var="cssClass"></c:set>
+														</c:if> 
+													<c:if test="${bean.currentPage != (page - 1) }">
+															<c:remove var="cssClass"/>
+														</c:if>
+														<li class="${cssClass}"><a
+															href="${bean.requestUrl}?${bean.getQueryString('No', '') }&No=${(page - 1) * bean.recordsPerPage}">${page}</a></li>
+													</c:forEach>
+													<c:if test="${bean.currentPage == (bean.numberOfPages -1) }">
+														<li class="disabled"><a
+															href="${bean.requestUrl}?${bean.getQueryString('No', '') }&No=${page * bean.recordsPerPage}">last</a></li>
+													</c:if>
+													<c:if test="${bean.currentPage < (bean.numberOfPages -1) }">
+														<li><a
+															href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=${(bean.numberOfPages - 1) * bean.recordsPerPage}">last</a></li>
+													</c:if>
+												</ul>
+											</div>
+											<c:forEach var="record" items="${bean.recordsList}"
+												varStatus="status">
+												<div class="row">
+													<div class="col-sm-12 col-md-12 col-lg-12">
+														<h3>${record.spec }</h3>
+														<ol>
+															<c:forEach var="property" items="${record.properties}"
+																varStatus="status">
+																<ul>
+																	<font face="Arial" color="gray">${property.key}:</font>
+																	${property.value }
+																</ul>
+															</c:forEach>
+														</ol>
+														<h4>Associated Dimensions</h4>
+														<ol>
+															<c:forEach var="assocDimension"
+																items="${record.dimValues}" varStatus="status">
+																<ul>
+																	<font face="Arial" color="gray">${assocDimension[0].dimValue.dimensionName }:</font>
+																	${assocDimension[0].dimValue.name }
+																</ul>
+															</c:forEach>
+														</ol>
+													</div>
+												</div>
+											</c:forEach>
+										</div>
+										<div class="col-sm-12 col-md-12 col-lg-12">
+											<div class="row">
+												<ul class="pagination">
+													<c:if test="${bean.currentPage == 0 }">
+														<li class="disabled"><a
+															href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=0 ">first</a></li>
+													</c:if>
+													<c:if test="${bean.currentPage > 0 }">
+														<li><a href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=0 ">first</a></li>
+													</c:if>
+													<c:forEach begin="${begin}" end="${end}" var="page">
+
+														<c:if test="${bean.currentPage == (page - 1) }">
+															<c:set value="active" var="cssClass"></c:set>
+														</c:if> 
+													<c:if test="${bean.currentPage != (page - 1) }">
+															<c:remove var="cssClass"/>
+														</c:if>
+														<li class="${cssClass}"><a
+															href="${bean.requestUrl}?${bean.getQueryString('No', '') }&No=${(page - 1) * bean.recordsPerPage}">${page}</a></li>
+													</c:forEach>
+													<c:if test="${bean.currentPage == (bean.numberOfPages -1) }">
+														<li class="disabled"><a
+															href="${bean.requestUrl}?${bean.getQueryString('No', '') }&No=${page * bean.recordsPerPage}">last</a></li>
+													</c:if>
+													<c:if test="${bean.currentPage < (bean.numberOfPages -1) }">
+														<li><a
+															href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=${(bean.numberOfPages - 1) * bean.recordsPerPage}">last</a></li>
+													</c:if>
+												</ul>
 											</div>
 										</div>
-										<c:forEach var="record" items="${bean.recordsList}"
-											varStatus="status">
-											<div class="row">
-												<div class="col-sm-12 col-md-12 col-lg-12">
-													<h3>${record.spec }</h3>
-													<ol>
-														<c:forEach var="property" items="${record.properties}"
-															varStatus="status">
-															<ul>
-																<font face="Arial" color="gray">${property.key}:</font>
-																${property.value }
-															</ul>
-														</c:forEach>
-													</ol>
-													<h4>Associated Dimensions</h4>
-													<ol>
-														<c:forEach var="assocDimension" items="${record.dimValues}"
-															varStatus="status">
-															<ul>
-																<font face="Arial" color="gray">${assocDimension[0].dimValue.dimensionName }:</font>
-																${assocDimension[0].dimValue.name }
-															</ul>
-														</c:forEach>
-													</ol>
-												</div>
-											</div>
-										</c:forEach>
 									</div>
 								</div>
 							</div>
@@ -214,13 +292,14 @@
 					</div>
 				</div>
 			</div>
+		</div>
 
-			<script type="text/javascript">
-				jQuery(document).ready(function($) {
-					$('#tabs').tab();
-				});
-			</script>
-			<script type="text/javascript" charset="utf-8" async
-				src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				$('#tabs').tab();
+			});
+		</script>
+		<script type="text/javascript" charset="utf-8" async
+			src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </body>
 </html>

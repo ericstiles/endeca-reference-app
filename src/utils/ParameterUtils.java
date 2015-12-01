@@ -39,8 +39,8 @@ public class ParameterUtils {
 	 */
 	public static Map<String, String[]> complementParameterMap(Map<String, String[]> parameterMap1, String key,
 			String value) {
-		//System.out.println("-----Start Method Call-----");
-		//System.out.println(ParameterUtils.getEndecaQueryString(parameterMap1));
+		System.out.println("-----Start Method Call-----");
+		System.out.println(ParameterUtils.getEndecaQueryString(parameterMap1));
 		Map<String, String[]> returnMap = new HashMap<String, String[]>();
 		Iterator<String> it = parameterMap1.keySet().iterator();
 		String iteratorKey = null;
@@ -52,35 +52,38 @@ public class ParameterUtils {
 			iteratorStringArray = ParameterUtils.adjustParameters(parameterMap1.get(iteratorKey));
 			tmpIteratorStringList = new ArrayList<String>();
 			if (iteratorKey.equals(key)){
-				//System.out.println("  Do Something because " + iteratorKey + " = " + key);
+				System.out.println("  Do Something because " + iteratorKey + " = " + key);
 				touched = true;
 				tmpIteratorStringList.addAll(Arrays.asList(iteratorStringArray));
 				if (!tmpIteratorStringList.remove(value)){
-					//System.out.println("    Nothing removed from list: " + tmpIteratorStringList);
-					tmpIteratorStringList.add(value);
-					//System.out.println("    Added " + value + " to list: " + tmpIteratorStringList);
+					System.out.println("    Nothing removed from list: " + tmpIteratorStringList);
+					if (value != null & value.length() > 0){
+						tmpIteratorStringList.add(value);
+						System.out.println("    Added " + value + " to list: " + tmpIteratorStringList);
+					}
 				} else {
-					//System.out.println("    Removed " + value + ". New list: " + tmpIteratorStringList);
+					System.out.println("    Removed " + value + ". New list: " + tmpIteratorStringList);
 					if (tmpIteratorStringList.size() == 0 && key.equals("N")){
 						tmpIteratorStringList.add("0");
 					}
 					
 				}
-				if (tmpIteratorStringList.size() > 0) {
+				if (tmpIteratorStringList.size() > 0 && null != value && value.length() > 0) {
+					System.out.println("  Adding to list under key: (" + iteratorKey + ") values " + tmpIteratorStringList);
 					returnMap.put(iteratorKey, tmpIteratorStringList.toArray(new String[tmpIteratorStringList.size()]));
 				}				
 			} else {
-				//System.out.println("  Skipping because " + iteratorKey + " != " + key);
+				System.out.println("  Skipping because " + iteratorKey + " != " + key);
 				returnMap.put(iteratorKey, iteratorStringArray);
 			}
-			if (!touched){
+			if (!touched && null != value && value.length() > 0){
 				returnMap.put(key, new String[]{value});
 			}
 			
 			
 		}
-		//System.out.println(ParameterUtils.getEndecaQueryString(returnMap));
-		//System.out.println("-----Leave Method Call-----");
+		System.out.println(ParameterUtils.getEndecaQueryString(returnMap));
+		System.out.println("-----Leave Method Call-----");
 		return returnMap;
 	}
 	/**

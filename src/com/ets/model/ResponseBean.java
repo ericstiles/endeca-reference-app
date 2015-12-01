@@ -3,8 +3,6 @@ package com.ets.model;
 import java.util.List;
 import java.util.Map;
 
-import com.endeca.navigation.AggrERecList;
-import com.endeca.navigation.DimValIdList;
 import com.endeca.navigation.ERecList;
 
 import utils.ParameterUtils;
@@ -19,12 +17,14 @@ public class ResponseBean {
 	private Map<String, String[]> parameterMap;
 	private String referringURL;
 	private long recordCount;
-	private List<UIDimension> list1;
-	private List<UIDimension> list2;
-	private List<UIDimension> list3;
+	private List<UIDimension> refinementsList;
 	private Map<String, String> mapQueryMethods;
 	private List navDescriptors;
 	private ERecList eRecList;
+	private int numberOfPages;
+	private int recordsPerPage;
+	private int currentPage = 10;
+	private int visiblePageRange = 7;
 
 	public long getRecordCount() {
 		return recordCount;
@@ -99,10 +99,9 @@ public class ResponseBean {
 	public void setParameterMap(Map<String, String[]> parameterMap) {
 		this.parameterMap = parameterMap ;
 	}
-	public Map<String, String[]> getParameterMap(){
-		return parameterMap;
+	public Map<String, String[]> getParameterMap() {
+		return this.parameterMap;
 	}
-
 	public void setReferringURL(String referer) {
 		this.referringURL = referer;
 		
@@ -111,30 +110,13 @@ public class ResponseBean {
 		return referringURL;
 	}
 
-	public void setList1(List<UIDimension> list1) {
-		this.list1 = list1;
+	public void setRefinementsList(List<UIDimension> refinementsList) {
+		this.refinementsList = refinementsList;
 		
 	}
-
-	public void setList2(List<UIDimension> list2) {
-		this.list2 = list2;
-		
+	public List<UIDimension> getRefinementsList(){
+		return this.refinementsList;
 	}
-
-	public void setList3(List<UIDimension> list3) {
-		this.list3 = list3;
-		
-	}
-	public List<UIDimension> getList1(){
-		return this.list1;
-	}
-	public List<UIDimension> getList2(){
-		return this.list2;
-	}
-	public List<UIDimension> getList3(){
-		return this.list3;
-	}
-
 	public void setQueryMethods(Map<String, String> mapQueryMethods) {
 		this.mapQueryMethods = mapQueryMethods;
 	}
@@ -148,7 +130,10 @@ public class ResponseBean {
 	public List getNavigationDescriptorIds(){
 		return navDescriptors;
 	}
-	
+
+	public String getQueryString(){
+		return ParameterUtils.getEndecaQueryString(this.getParameterMap());
+	}
 	public String getQueryString(String key, String value){
 		return ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(this.getParameterMap(), key, value));
 	}
@@ -159,4 +144,38 @@ public class ResponseBean {
 	public List<?> getRecordsList(){
 		return eRecList;
 	}
+	public void setPagination(long recordCount) {
+		int recordsPerPage = 10;
+		setNumberOfPages((int) Math.ceil((double)recordCount / recordsPerPage));
+		setRecordsPerPage(recordsPerPage);
+		
+	}
+	public void setRecordsPerPage(int recordsPerPage) {
+		this.recordsPerPage=recordsPerPage;
+	}
+
+	public void setNumberOfPages(int numberOfPages) {
+		this.numberOfPages = numberOfPages;
+	}
+	public void setCurrentPage(int currentPage){
+		this.currentPage=currentPage;
+	}
+
+	public int getNumberOfPages() {
+		return numberOfPages;
+	}
+
+	public int getRecordsPerPage() {
+		return recordsPerPage;
+	}
+
+	public int getCurrentPage() {
+		return currentPage;
+	}
+	public int getVisiblePageRange() {
+		return visiblePageRange ;
+	}
+	public void setVisiblePageRange(int visiblePageRange){
+		this.visiblePageRange=visiblePageRange;
+	}	
 }

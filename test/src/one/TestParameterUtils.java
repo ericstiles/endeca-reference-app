@@ -200,8 +200,32 @@ public class TestParameterUtils {
 		solution = "Ne=10093&N=0";
 
 		if (!string.equals(solution)) {
-			fail("6. Expected:" + solution + ", Returned:" + string);
+			fail("7. Expected:" + solution + ", Returned:" + string);
 		}
+
+		/////////////////////////
+		map1 = new HashMap<String, String[]>();
+		map1.put("N", new String[] { "0"});
+		map1.put("Ne", new String[] { "1"});
+		map1.put("No", new String[] { "80"});
+
+		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1,"No", ""));
+		solution = "Ne=1&N=0";
+
+		if (!string.equals(solution)) {
+			fail("8. Expected:" + solution + ", Returned:" + string);
+		}
+		/////////////////////////
+		map1 = new HashMap<String, String[]>();
+		map1.put("N", new String[] { "0"});
+		map1.put("Ne", new String[] { "1"});
+
+		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1,"No", ""));
+		solution = "Ne=1&N=0";
+
+		if (!string.equals(solution)) {
+			fail("9. Expected:" + solution + ", Returned:" + string);
+		}	
 	}
 	@Test
 	public void testAdjustParameters_one() {	

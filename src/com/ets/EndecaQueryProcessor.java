@@ -40,8 +40,6 @@ public class EndecaQueryProcessor {
 	Map<String, String> mapQueryMethods = new HashMap<String, String>();
 	List<UIDimension> listDimension = new ArrayList<UIDimension>();
 	List<UIDimension> list1 = new ArrayList<UIDimension>();
-	List<UIDimension> list2 = new ArrayList<UIDimension>();
-	List<UIDimension> list3 = new ArrayList<UIDimension>();
 	StringBuffer sb = null;
 	ENEQueryResults qr = null;
 
@@ -62,16 +60,25 @@ public class EndecaQueryProcessor {
 			bean.setQueryResultsMethods(this.getMapQueryResultsMethods());
 			bean.setQueryMethods(this.getMapQueryMethods());
 			bean.setNavigation(this.getNavigation());		
-			bean.setList1(this.getList1());
-			bean.setList2(this.getList2());
-			bean.setList3(this.getList3());
+			bean.setRefinementsList(this.getList1());
 			bean.setNavigationDescriptorIds(usq.getNavDescriptors());
+			
 			
 			if (qr.containsNavigation()) {
 				setNavigation(qr.getNavigation(), bean.getParameterMap());
 				bean.setRecordCount(qr.getNavigation().getTotalNumERecs());
+				bean.setPagination(bean.getRecordCount());
 				mapQueryResultsMethods.put("nav.getERecs().size()", qr.getNavigation().getERecs().size() + "");
 				bean.setRecordsList(qr.getNavigation().getERecs());
+				
+				String[] page = bean.getParameterMap().get("No");
+				if(null == page || page.length == 0){
+					bean.setCurrentPage(1);
+				} else {
+					bean.setCurrentPage((new Integer(page[0]).intValue()) / bean.getRecordsPerPage());
+				}
+				
+				
 				// SupplementList merchList = nav.getSupplements();
 
 			} else if (qr.containsERecs()) {
@@ -159,14 +166,6 @@ public class EndecaQueryProcessor {
 		return list1;
 	}
 
-	public List<UIDimension> getList2() {
-		return list2;
-	}
-
-	public List<UIDimension> getList3() {
-		return list3;
-	}
-
 	public void setNavigation(Navigation navigation, Map<String, String[]> parameterMap) {
 		System.out.println("navigation.getRefinementDimensions().size():" + navigation.getCompleteDimensions().size());
 		DimensionList dl = navigation.getRefinementDimensions();
@@ -184,24 +183,6 @@ public class EndecaQueryProcessor {
 			d = (Dimension) dl.get(i);
 			list1.add(new UIDimension().setUIDimensionBasedOnNavigationState(d));
 			System.out.println(list1.get(i));
-		}
-		System.out
-				.println("navigation.getIntegratedDimensions().size():" + navigation.getIntegratedDimensions().size());
-		dl = navigation.getIntegratedDimensions();
-		d = null;
-		for (int i = 0; i < dl.size(); i++) {
-			d = (Dimension) dl.get(i);
-			list2.add(new UIDimension(d));
-			System.out.println(d.getRoot().getName());
-		}
-		System.out
-				.println("navigation.getRefinementDimensions().size():" + navigation.getIntegratedDimensions().size());
-		dl = navigation.getRefinementDimensions();
-		d = null;
-		for (int i = 0; i < dl.size(); i++) {
-			d = (Dimension) dl.get(i);
-			list3.add(new UIDimension(d));
-			System.out.println(d.getRoot().getName());
 		}
 	}
 

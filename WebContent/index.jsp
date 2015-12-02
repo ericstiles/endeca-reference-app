@@ -177,7 +177,7 @@
 										<div class="col-sm-12 col-md-12 col-lg-12">
 											<div class="row">
 
-
+												<%-- Top Pagination Start --%>
 
 												<c:set var="p" value="${bean.currentPage}" />
 												<%-- current page (1-based) --%>
@@ -194,28 +194,29 @@
 													value="${((p + r) < t ? ((p + r) > l ? (p + r) : l) : t) + 1}" />
 												<c:if test="${end > bean.numberOfPages }">
 													<c:set var="end" value="${bean.numberOfPages }" />
-												</c:if>
-
+												</c:if>												
 												<ul class="pagination">
 													<c:if test="${bean.currentPage == 0 }">
 														<li class="disabled"><a
 															href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=0 ">first</a></li>
 													</c:if>
 													<c:if test="${bean.currentPage > 0 }">
-														<li><a href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=0 ">first</a></li>
+														<li><a
+															href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=0 ">first</a></li>
 													</c:if>
 													<c:forEach begin="${begin}" end="${end}" var="page">
 
 														<c:if test="${bean.currentPage == (page - 1) }">
 															<c:set value="active" var="cssClass"></c:set>
-														</c:if> 
-													<c:if test="${bean.currentPage != (page - 1) }">
-															<c:remove var="cssClass"/>
+														</c:if>
+														<c:if test="${bean.currentPage != (page - 1) }">
+															<c:remove var="cssClass" />
 														</c:if>
 														<li class="${cssClass}"><a
 															href="${bean.requestUrl}?${bean.getQueryString('No', '') }&No=${(page - 1) * bean.recordsPerPage}">${page}</a></li>
 													</c:forEach>
-													<c:if test="${bean.currentPage == (bean.numberOfPages -1) }">
+													<c:if
+														test="${bean.currentPage == (bean.numberOfPages -1) }">
 														<li class="disabled"><a
 															href="${bean.requestUrl}?${bean.getQueryString('No', '') }&No=${page * bean.recordsPerPage}">last</a></li>
 													</c:if>
@@ -224,6 +225,7 @@
 															href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=${(bean.numberOfPages - 1) * bean.recordsPerPage}">last</a></li>
 													</c:if>
 												</ul>
+												<%-- Top Pagination End --%>
 											</div>
 											<c:forEach var="record" items="${bean.recordsList}"
 												varStatus="status">
@@ -261,20 +263,22 @@
 															href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=0 ">first</a></li>
 													</c:if>
 													<c:if test="${bean.currentPage > 0 }">
-														<li><a href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=0 ">first</a></li>
+														<li><a
+															href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=0 ">first</a></li>
 													</c:if>
 													<c:forEach begin="${begin}" end="${end}" var="page">
 
 														<c:if test="${bean.currentPage == (page - 1) }">
 															<c:set value="active" var="cssClass"></c:set>
-														</c:if> 
-													<c:if test="${bean.currentPage != (page - 1) }">
-															<c:remove var="cssClass"/>
+														</c:if>
+														<c:if test="${bean.currentPage != (page - 1) }">
+															<c:remove var="cssClass" />
 														</c:if>
 														<li class="${cssClass}"><a
 															href="${bean.requestUrl}?${bean.getQueryString('No', '') }&No=${(page - 1) * bean.recordsPerPage}">${page}</a></li>
 													</c:forEach>
-													<c:if test="${bean.currentPage == (bean.numberOfPages -1) }">
+													<c:if
+														test="${bean.currentPage == (bean.numberOfPages -1) }">
 														<li class="disabled"><a
 															href="${bean.requestUrl}?${bean.getQueryString('No', '') }&No=${page * bean.recordsPerPage}">last</a></li>
 													</c:if>

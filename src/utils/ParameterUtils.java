@@ -10,11 +10,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.log4j.Logger;
 
 public class ParameterUtils {
-	public static String test(){
-		return "TEST FROM PARAMETER UTILS";
-	}
+	   /* Get actual class name to be printed on */
+	   static Logger log = Logger.getLogger(ParameterUtils.class.getName());
 	/**
 	 * 
 	 * @param parameterMap1
@@ -39,8 +39,10 @@ public class ParameterUtils {
 	 */
 	public static Map<String, String[]> complementParameterMap(Map<String, String[]> parameterMap1, String key,
 			String value) {
-		System.out.println("-----Start Method Call-----");
-		System.out.println(ParameterUtils.getEndecaQueryString(parameterMap1));
+		log.info("-----Start Method Call-----");
+		log.info("key: " + key);
+		log.info("value: " + value);
+		log.info(ParameterUtils.getEndecaQueryString(parameterMap1));
 		Map<String, String[]> returnMap = new HashMap<String, String[]>();
 		Iterator<String> it = parameterMap1.keySet().iterator();
 		String iteratorKey = null;
@@ -48,42 +50,42 @@ public class ParameterUtils {
 		List<String> tmpIteratorStringList;
 		boolean touched = false;
 		while (it.hasNext()){
+			log.info("Starting loop on iterator");
 			iteratorKey = it.next();
 			iteratorStringArray = ParameterUtils.adjustParameters(parameterMap1.get(iteratorKey));
 			tmpIteratorStringList = new ArrayList<String>();
 			if (iteratorKey.equals(key)){
-				System.out.println("  Do Something because " + iteratorKey + " = " + key);
+				log.info("  Do Something because " + iteratorKey + " = " + key);
 				touched = true;
 				tmpIteratorStringList.addAll(Arrays.asList(iteratorStringArray));
 				if (!tmpIteratorStringList.remove(value)){
-					System.out.println("    Nothing removed from list: " + tmpIteratorStringList);
+					log.info("    Nothing removed from list: " + tmpIteratorStringList);
 					if (value != null & value.length() > 0){
 						tmpIteratorStringList.add(value);
-						System.out.println("    Added " + value + " to list: " + tmpIteratorStringList);
+						log.info("    Added " + value + " to list: " + tmpIteratorStringList);
 					}
 				} else {
-					System.out.println("    Removed " + value + ". New list: " + tmpIteratorStringList);
+					log.info("    Removed " + value + ". New list: " + tmpIteratorStringList);
 					if (tmpIteratorStringList.size() == 0 && key.equals("N")){
 						tmpIteratorStringList.add("0");
 					}
 					
 				}
 				if (tmpIteratorStringList.size() > 0 && null != value && value.length() > 0) {
-					System.out.println("  Adding to list under key: (" + iteratorKey + ") values " + tmpIteratorStringList);
+					log.info("  Adding to list under key: (" + iteratorKey + ") values " + tmpIteratorStringList);
 					returnMap.put(iteratorKey, tmpIteratorStringList.toArray(new String[tmpIteratorStringList.size()]));
 				}				
 			} else {
-				System.out.println("  Skipping because " + iteratorKey + " != " + key);
+				log.info("  Skipping because " + iteratorKey + " != " + key);
 				returnMap.put(iteratorKey, iteratorStringArray);
 			}
-			if (!touched && null != value && value.length() > 0){
-				returnMap.put(key, new String[]{value});
-			}
-			
-			
+			log.info("Finishing loop on iterator");
 		}
-		System.out.println(ParameterUtils.getEndecaQueryString(returnMap));
-		System.out.println("-----Leave Method Call-----");
+		if (!touched && null != value && value.length() > 0){
+			returnMap.put(key, new String[]{value});
+		}
+		log.info(ParameterUtils.getEndecaQueryString(returnMap));
+		log.info("-----Leave Method Call-----");
 		return returnMap;
 	}
 	/**

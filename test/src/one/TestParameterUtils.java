@@ -226,6 +226,18 @@ public class TestParameterUtils {
 		if (!string.equals(solution)) {
 			fail("9. Expected:" + solution + ", Returned:" + string);
 		}	
+		/////////////////////////
+		map1 = new HashMap<String, String[]>();
+		map1.put("No", new String[] { "0"});
+		map1.put("Ne", new String[] { "1"});
+		map1.put("N", new String[] { "3"});
+
+		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1,"Ne", "1"));
+		solution = "No=0&N=3";
+
+		if (!string.equals(solution)) {
+			fail("10. Expected:" + solution + ", Returned:" + string);
+		}	
 	}
 	@Test
 	public void testAdjustParameters_one() {	

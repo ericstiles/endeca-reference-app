@@ -73,7 +73,7 @@ public class EndecaQueryProcessor {
 				
 				String[] page = bean.getParameterMap().get("No");
 				if(null == page || page.length == 0){
-					bean.setCurrentPage(1);
+					bean.setCurrentPage(0);
 				} else {
 					bean.setCurrentPage((new Integer(page[0]).intValue()) / bean.getRecordsPerPage());
 				}
@@ -90,8 +90,8 @@ public class EndecaQueryProcessor {
 
 		//Left over from running command line.  
 		//Remove as functionality is added on jsp page
-		print(qr);
-		System.out.println(sb.toString());
+		//print(qr);
+		//System.out.println(sb.toString());
 
 	}
 
@@ -110,15 +110,18 @@ public class EndecaQueryProcessor {
 		Method[] methods = ENEQuery.class.getMethods();
 		for (int i = 0; i < methods.length; i++) {
 			try {
-				System.out.println(methods[i].getName());
+				//System.out.println(methods[i].getName());
 				if (methods[i].getName().startsWith("get")) {
 					mapQueryMethods.put("usq." + methods[i].getName(), methods[i].invoke(usq) + "");
 				}
 			} catch (IllegalAccessException e) {
+				System.out.println("1. FAILING:  method call:" + "usq." + methods[i].getName());
 				e.printStackTrace();
 			} catch (IllegalArgumentException e) {
+				System.out.println("2. FAILING:  method call:" + "usq." + methods[i].getName());
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				System.out.println("3. FAILING:  method call:" + "usq." + methods[i].getName());
 				e.printStackTrace();
 			}
 
@@ -167,22 +170,21 @@ public class EndecaQueryProcessor {
 	}
 
 	public void setNavigation(Navigation navigation, Map<String, String[]> parameterMap) {
-		System.out.println("navigation.getRefinementDimensions().size():" + navigation.getCompleteDimensions().size());
+		//System.out.println("navigation.getRefinementDimensions().size():" + navigation.getCompleteDimensions().size());
 		DimensionList dl = navigation.getRefinementDimensions();
 		Dimension d = null;
 		for (int i = 0; i < dl.size(); i++) {
 			d = (Dimension) dl.get(i);
 			listDimension.add(new UIDimension(d));
-			System.out.println(d.getRoot().getName());
+			//System.out.println(d.getRoot().getName());
 		}
-		System.out
-				.println("navigation.getDescriptorDimensions().size():" + navigation.getDescriptorDimensions().size());
+		//System.out.println("navigation.getDescriptorDimensions().size():" + navigation.getDescriptorDimensions().size());
 		dl = navigation.getDescriptorDimensions();
 		d = null;
 		for (int i = 0; i < dl.size(); i++) {
 			d = (Dimension) dl.get(i);
 			list1.add(new UIDimension().setUIDimensionBasedOnNavigationState(d));
-			System.out.println(list1.get(i));
+			//System.out.println(list1.get(i));
 		}
 	}
 

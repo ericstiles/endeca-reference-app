@@ -28,16 +28,16 @@ The endeca_navigation-6.4.0.jar file needs to be added to the project and lib fo
 This is tested against:
  * MDEX 6.4.1.2
  * Platform Services 6.1.3
- * Tools And Frameworks 3.1.1
  * CAS 3.1.1
- * Experience Manager
- * Relevancy Ranking
+ * JBoss 6.4
+ * JDK 1.8_20
 
 ## Next Steps
 
 This is still a work in progress and the remaining functionality around record aggregation and filtering needs to be built.
 
 Add the following:
+* Fix filtering a multi level hierarchy refinements.
 * log4j
 * configuration settings in a property file
  

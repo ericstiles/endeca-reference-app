@@ -13,11 +13,8 @@ import com.endeca.navigation.AssocDimLocations;
 import com.endeca.navigation.AssocDimLocationsList;
 import com.endeca.navigation.DimLocation;
 import com.endeca.navigation.DimVal;
-import com.endeca.navigation.DimValIdList;
-import com.endeca.navigation.DimValList;
 import com.endeca.navigation.Dimension;
 import com.endeca.navigation.DimensionList;
-import com.endeca.navigation.ENEConnection;
 import com.endeca.navigation.ENEQuery;
 import com.endeca.navigation.ENEQueryException;
 import com.endeca.navigation.ENEQueryResults;
@@ -27,21 +24,83 @@ import com.endeca.navigation.HttpENEConnection;
 import com.endeca.navigation.Navigation;
 import com.endeca.navigation.Property;
 import com.endeca.navigation.PropertyMap;
-import com.endeca.navigation.SupplementList;
 import com.endeca.navigation.UrlENEQuery;
-import com.endeca.navigation.UrlENEQueryParseException;
 import com.ets.model.ResponseBean;
 import com.ets.model.UIDimension;
 
 import utils.TableBuilder;
 
 public class EndecaQueryProcessor {
-	Map<String, String> mapQueryResultsMethods = new HashMap<String, String>();
-	Map<String, String> mapQueryMethods = new HashMap<String, String>();
-	List<UIDimension> listDimension = new ArrayList<UIDimension>();
-	List<UIDimension> list1 = new ArrayList<UIDimension>();
-	StringBuffer sb = null;
-	ENEQueryResults qr = null;
+	public static String returnSpaceString(int space) {
+		String spacing = "";
+		for (int i = 0; i < space; i++) {
+			spacing = spacing + " ";
+		}
+		return spacing;
+	}
+	private List<UIDimension> associatedDimensions = new ArrayList<UIDimension>();
+	private List<UIDimension> listDimension = new ArrayList<UIDimension>();
+	private Map<String, String> mapQueryMethods = new HashMap<String, String>();
+	private Map<String, String> mapQueryResultsMethods = new HashMap<String, String>();
+	private ENEQueryResults qr = null;
+
+	private StringBuffer sb = null;
+
+	public List<UIDimension> getRefinementDimensions() {
+		return associatedDimensions;
+	}
+
+	public Map<String, String> getMapQueryMethods() {
+		return mapQueryMethods;
+	}
+
+	public Map<String, String> getMapQueryResultsMethods() {
+		return mapQueryResultsMethods;
+	}
+
+	public List<UIDimension> getNavigation() {
+		return listDimension;
+	}
+
+	public void printAssocDimLocationsList(AssocDimLocations ad, int space) {
+		TableBuilder tb = new TableBuilder(space);
+		tb.addRow("Property", "Value");
+		tb.addRow("------", "------");
+		DimVal dr = ad.getDimRoot();
+		sb.append(returnSpaceString(space) + "Root Dimension:").append("\n");
+		printDimVal(dr, space + 2);
+		sb.append(returnSpaceString(space + 2) + "Total Number of Dim Locations: " + ad.getTotalNumLocations())
+				.append("\n");
+		if (ad.getTotalNumLocations() > 0) {
+			for (int i = 0; i < ad.getTotalNumLocations(); i++) {
+				sb.append(returnSpaceString(space + 2) + "  Dim Location " + i + ":").append("\n");
+				printDimLocation((DimLocation) ad.get(i), space + 2);
+			}
+		}
+	}
+
+	public void printDimLocation(DimLocation dl, int space) {
+		sb.append(returnSpaceString(space + 2) + "object: " + dl).append("\n");
+		printDimVal(dl.getDimValue(), space + 4);
+	}
+
+	public void printDimVal(DimVal dl, int space) {
+		TableBuilder tb = new TableBuilder(space);
+		tb.addRow("Property", "Value");
+		tb.addRow("------", "------");
+		tb.addRow("Object", dl.toString());
+		tb.addRow("Dimension Id: ", dl.getDimensionId() + "");
+		tb.addRow("Dimension Name:  ", dl.getDimensionName());
+		tb.addRow("Id:  ", dl.getId() + "");
+		tb.addRow("Name:  ", dl.getName());
+		tb.addRow("Property Map:  ", dl.getProperties() + "");
+		tb.addRow("Synonyms:  ", dl.getSynonyms() + "");
+		tb.addRow("Leaf:  ", dl.isLeaf() + "");
+		tb.addRow("MultiSelectAnd:  ", dl.isMultiSelectAnd() + "");
+		tb.addRow("MultiSelectOr:  ", dl.isMultiSelectOr() + "");
+		tb.addRow("Navigable:  ", dl.isNavigable() + "");
+		sb.append(tb.toString());
+	}
 
 	public void run(ResponseBean bean) {
 		sb = new StringBuffer();
@@ -60,7 +119,7 @@ public class EndecaQueryProcessor {
 			bean.setQueryResultsMethods(this.getMapQueryResultsMethods());
 			bean.setQueryMethods(this.getMapQueryMethods());
 			bean.setNavigation(this.getNavigation());		
-			bean.setRefinementsList(this.getList1());
+			bean.setRefinementsList(this.getRefinementDimensions());
 			bean.setNavigationDescriptorIds(usq.getNavDescriptors());
 			
 			
@@ -95,6 +154,33 @@ public class EndecaQueryProcessor {
 
 	}
 
+	public void setMapQueryMethods(Map<String, String> mapQueryMethods) {
+		this.mapQueryMethods = mapQueryMethods;
+	}
+
+	public void setMapQueryResultsMethods(Map<String, String> mapQueryResultsMethods) {
+		this.mapQueryResultsMethods = mapQueryResultsMethods;
+	}
+
+	public void setNavigation(Navigation navigation, Map<String, String[]> parameterMap) {
+		//System.out.println("navigation.getRefinementDimensions().size():" + navigation.getCompleteDimensions().size());
+		DimensionList dl = navigation.getRefinementDimensions();
+		Dimension d = null;
+		for (int i = 0; i < dl.size(); i++) {
+			d = (Dimension) dl.get(i);
+			listDimension.add(new UIDimension(d));
+			//System.out.println(d.getRoot().getName());
+		}
+		//System.out.println("navigation.getDescriptorDimensions().size():" + navigation.getDescriptorDimensions().size());
+		dl = navigation.getDescriptorDimensions();
+		d = null;
+		for (int i = 0; i < dl.size(); i++) {
+			d = (Dimension) dl.get(i);
+			associatedDimensions.add(new UIDimension().setUIDimensionBasedOnNavigationState(d));
+			//System.out.println(list1.get(i));
+		}
+	}
+
 	private void print(ENEQueryResults qr) {
 		if (qr.containsNavigation()) {
 			printERecs(qr.getNavigation().getERecs());
@@ -104,6 +190,36 @@ public class EndecaQueryProcessor {
 			printERecs(qr.getERecs());
 
 		}
+	}
+
+	private void printERecs(ERecList eRecList) {
+		for (int i = 0; i < eRecList.size(); i++) {
+			sb.append("---START---").append("\n");
+			ERec e = (ERec) eRecList.get(i);
+			sb.append("  Object: " + e).append("\n");
+			sb.append("  Spec: " + e.getSpec()).append("\n");
+			AssocDimLocationsList list = e.getDimValues();
+			sb.append("  AssocDimLocationsList size: " + list.size()).append("\n");
+			for (int j = 0; j < list.size(); j++) {
+				printAssocDimLocationsList((AssocDimLocations) list.get(j), 4);
+			}
+			sb.append(returnSpaceString(5) + "ERec Properties").append("\n");
+			printPropertiesMap(e.getProperties(), 7);
+			sb.append("---STOP---");
+		}
+	}
+
+	private void printPropertiesMap(PropertyMap properties, int space) {
+		Set set = properties.entrySet();
+		Iterator it = set.iterator();
+		TableBuilder tb = new TableBuilder(space);
+		tb.addRow("Key", "Value");
+		tb.addRow("---", "---");
+		while (it.hasNext()) {
+			Property property = (Property) it.next();
+			tb.addRow((String) property.getKey(), (String) property.getValue());
+		}
+		sb.append(tb);
 	}
 
 	private void processENDEQueryMethods(ENEQuery usq) {
@@ -143,126 +259,5 @@ public class EndecaQueryProcessor {
 		mapQueryResultsMethods.put("qr.getNavigation()", qr.getNavigation() + "");
 		mapQueryResultsMethods.put("qr.getNavigation().getTotalNumERecs())",
 				qr.getNavigation().getTotalNumERecs() + "");
-	}
-
-	public Map<String, String> getMapQueryMethods() {
-		return mapQueryMethods;
-	}
-
-	public void setMapQueryMethods(Map<String, String> mapQueryMethods) {
-		this.mapQueryMethods = mapQueryMethods;
-	}
-
-	public Map<String, String> getMapQueryResultsMethods() {
-		return mapQueryResultsMethods;
-	}
-
-	public void setMapQueryResultsMethods(Map<String, String> mapQueryResultsMethods) {
-		this.mapQueryResultsMethods = mapQueryResultsMethods;
-	}
-
-	public List<UIDimension> getNavigation() {
-		return listDimension;
-	}
-
-	public List<UIDimension> getList1() {
-		return list1;
-	}
-
-	public void setNavigation(Navigation navigation, Map<String, String[]> parameterMap) {
-		//System.out.println("navigation.getRefinementDimensions().size():" + navigation.getCompleteDimensions().size());
-		DimensionList dl = navigation.getRefinementDimensions();
-		Dimension d = null;
-		for (int i = 0; i < dl.size(); i++) {
-			d = (Dimension) dl.get(i);
-			listDimension.add(new UIDimension(d));
-			//System.out.println(d.getRoot().getName());
-		}
-		//System.out.println("navigation.getDescriptorDimensions().size():" + navigation.getDescriptorDimensions().size());
-		dl = navigation.getDescriptorDimensions();
-		d = null;
-		for (int i = 0; i < dl.size(); i++) {
-			d = (Dimension) dl.get(i);
-			list1.add(new UIDimension().setUIDimensionBasedOnNavigationState(d));
-			//System.out.println(list1.get(i));
-		}
-	}
-
-	private void printERecs(ERecList eRecList) {
-		for (int i = 0; i < eRecList.size(); i++) {
-			sb.append("---START---").append("\n");
-			ERec e = (ERec) eRecList.get(i);
-			sb.append("  Object: " + e).append("\n");
-			sb.append("  Spec: " + e.getSpec()).append("\n");
-			AssocDimLocationsList list = e.getDimValues();
-			sb.append("  AssocDimLocationsList size: " + list.size()).append("\n");
-			for (int j = 0; j < list.size(); j++) {
-				printAssocDimLocationsList((AssocDimLocations) list.get(j), 4);
-			}
-			sb.append(returnSpaceString(5) + "ERec Properties").append("\n");
-			printPropertiesMap(e.getProperties(), 7);
-			sb.append("---STOP---");
-		}
-	}
-
-	private void printPropertiesMap(PropertyMap properties, int space) {
-		Set set = properties.entrySet();
-		Iterator it = set.iterator();
-		TableBuilder tb = new TableBuilder(space);
-		tb.addRow("Key", "Value");
-		tb.addRow("---", "---");
-		while (it.hasNext()) {
-			Property property = (Property) it.next();
-			tb.addRow((String) property.getKey(), (String) property.getValue());
-		}
-		sb.append(tb);
-	}
-
-	public void printAssocDimLocationsList(AssocDimLocations ad, int space) {
-		TableBuilder tb = new TableBuilder(space);
-		tb.addRow("Property", "Value");
-		tb.addRow("------", "------");
-		DimVal dr = ad.getDimRoot();
-		sb.append(returnSpaceString(space) + "Root Dimension:").append("\n");
-		printDimVal(dr, space + 2);
-		sb.append(returnSpaceString(space + 2) + "Total Number of Dim Locations: " + ad.getTotalNumLocations())
-				.append("\n");
-		if (ad.getTotalNumLocations() > 0) {
-			for (int i = 0; i < ad.getTotalNumLocations(); i++) {
-				sb.append(returnSpaceString(space + 2) + "  Dim Location " + i + ":").append("\n");
-				printDimLocation((DimLocation) ad.get(i), space + 2);
-			}
-		}
-	}
-
-	public void printDimVal(DimVal dl, int space) {
-		TableBuilder tb = new TableBuilder(space);
-		tb.addRow("Property", "Value");
-		tb.addRow("------", "------");
-		tb.addRow("Object", dl.toString());
-		tb.addRow("Dimension Id: ", dl.getDimensionId() + "");
-		tb.addRow("Dimension Name:  ", dl.getDimensionName());
-		tb.addRow("Id:  ", dl.getId() + "");
-		tb.addRow("Name:  ", dl.getName());
-		tb.addRow("Property Map:  ", dl.getProperties() + "");
-		tb.addRow("Synonyms:  ", dl.getSynonyms() + "");
-		tb.addRow("Leaf:  ", dl.isLeaf() + "");
-		tb.addRow("MultiSelectAnd:  ", dl.isMultiSelectAnd() + "");
-		tb.addRow("MultiSelectOr:  ", dl.isMultiSelectOr() + "");
-		tb.addRow("Navigable:  ", dl.isNavigable() + "");
-		sb.append(tb.toString());
-	}
-
-	public void printDimLocation(DimLocation dl, int space) {
-		sb.append(returnSpaceString(space + 2) + "object: " + dl).append("\n");
-		printDimVal(dl.getDimValue(), space + 4);
-	}
-
-	public static String returnSpaceString(int space) {
-		String spacing = "";
-		for (int i = 0; i < space; i++) {
-			spacing = spacing + " ";
-		}
-		return spacing;
 	}
 }

@@ -9,7 +9,15 @@ import com.endeca.navigation.DimValList;
 import com.endeca.navigation.Dimension;
 
 public class UIDimension {
+	private long id;
+
+	private String name;
+
+	private boolean open;
+
 	private AbstractList<Refinement> refinements;
+
+	private String url;
 
 	public UIDimension() {
 
@@ -22,15 +30,36 @@ public class UIDimension {
 		setRefinements(dl);
 	}
 
+	public long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+	public List<Refinement> getRefinements() {
+		return refinements;
+	}
 	public String getUrl() {
 		return url;
 	}
-
-	public void setUrl(String url) {
-		this.url = url;
+	public boolean isOpen() {
+		return open;
 	}
 
-	private void setRefinements(DimValList dl) {
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setOpen(boolean open) {
+		this.open = open;
+	}
+
+	public void setRefinements(DimValList dl) {
 		refinements = new ArrayList<Refinement>();
 		DimVal dv = null;
 		for (int i = 0; i < dl.size(); i++) {
@@ -47,50 +76,23 @@ public class UIDimension {
 		return this;
 	}
 
-	public List<Refinement> getRefinements() {
-		return refinements;
-	}
-
-	String name;
-	long id;
-	boolean open;
-	String url;
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public boolean isOpen() {
-		return open;
-	}
-
-	public void setOpen(boolean open) {
-		this.open = open;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UIDimension [refinements=");
-		builder.append(refinements);
+		builder.append("UIDimension [id=");
+		builder.append(id);
 		builder.append(", name=");
 		builder.append(name);
-		builder.append(", id=");
-		builder.append(id);
 		builder.append(", open=");
 		builder.append(open);
+		builder.append(", refinements=");
+		builder.append(refinements);
+		builder.append(", url=");
+		builder.append(url);
 		builder.append("]");
 		return builder.toString();
 	}

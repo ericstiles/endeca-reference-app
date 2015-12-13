@@ -4,15 +4,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.DiscriminatorValue;
+
 import com.endeca.navigation.AssocDimLocations;
 import com.endeca.navigation.AssocDimLocationsList;
 import com.endeca.navigation.DimLocation;
 import com.endeca.navigation.DimVal;
+import com.endeca.navigation.DimValList;
 import com.endeca.navigation.Dimension;
 import com.endeca.navigation.DimensionList;
 import com.endeca.navigation.ENEQuery;
@@ -31,6 +35,13 @@ import com.ets.model.UIDimension;
 import utils.TableBuilder;
 
 public class EndecaQueryProcessor {
+	/**
+	 * Used for console output to orgranize data by adding spaces where needed.  Should be deleted
+	 * once all console output has been moved to the browser output.
+	 * 
+	 * @param space
+	 * @return
+	 */
 	public static String returnSpaceString(int space) {
 		String spacing = "";
 		for (int i = 0; i < space; i++) {
@@ -39,7 +50,8 @@ public class EndecaQueryProcessor {
 		return spacing;
 	}
 	private List<UIDimension> associatedDimensions = new ArrayList<UIDimension>();
-	private List<UIDimension> listDimension = new ArrayList<UIDimension>();
+	private List<UIDimension> descriptorDimensions = new ArrayList<UIDimension>();
+	private Set<String> ancestors = new HashSet<String>();
 	private Map<String, String> mapQueryMethods = new HashMap<String, String>();
 	private Map<String, String> mapQueryResultsMethods = new HashMap<String, String>();
 	private ENEQueryResults qr = null;
@@ -59,7 +71,7 @@ public class EndecaQueryProcessor {
 	}
 
 	public List<UIDimension> getNavigation() {
-		return listDimension;
+		return descriptorDimensions;
 	}
 
 	public void printAssocDimLocationsList(AssocDimLocations ad, int space) {
@@ -129,6 +141,7 @@ public class EndecaQueryProcessor {
 				bean.setPagination(bean.getRecordCount());
 				mapQueryResultsMethods.put("nav.getERecs().size()", qr.getNavigation().getERecs().size() + "");
 				bean.setRecordsList(qr.getNavigation().getERecs());
+				bean.setAncestors(this.getAncestors());
 				
 				String[] page = bean.getParameterMap().get("No");
 				if(null == page || page.length == 0){
@@ -150,8 +163,54 @@ public class EndecaQueryProcessor {
 		//Left over from running command line.  
 		//Remove as functionality is added on jsp page
 		//print(qr);
+		//printRefinementParent(qr);
 		//System.out.println(sb.toString());
 
+	}
+
+	private Set<String> getAncestors() {
+		return this.ancestors;
+	}
+
+	private void printRefinementParent(ENEQueryResults qr2) {
+		System.out.println("======================================");
+		try{
+		DimensionList dl = qr2.getNavigation().getDescriptorDimensions();
+		for (int i = 0; i < dl.size(); i++){
+			Dimension d = (Dimension) dl.get(i);
+			if (d.getId() == 8){
+				System.out.println(d.getName());
+				DimValList dl2 = d.getAncestors();
+				System.out.println("    ===Ancestors Start===");
+				for (int j = 0; j < dl2.size(); j++){
+					DimVal d2 = (DimVal) dl2.get(j);
+					System.out.println("    " + d2.getDimensionName() + ", " + d2.getName() + ", " + d2.getId());
+					
+				}
+				System.out.println("    ===Ancestors End===");
+				System.out.println("    ===Complete Path Start===");
+				dl2 = d.getCompletePath();
+				for (int j = 0; j < dl2.size(); j++){
+					DimVal d2 = (DimVal) dl2.get(j);
+					System.out.println("    " + d2.getDimensionName() + ", " + d2.getName() + ", " + d2.getId());
+					
+				}
+				System.out.println("    ===Complete Path End===");
+				System.out.println("    ===Intermediates Start===");
+				dl2 = d.getIntermediates();
+				for (int j = 0; j < dl2.size(); j++){
+					DimVal d2 = (DimVal) dl2.get(j);
+					System.out.println("    " + d2.getDimensionName() + ", " + d2.getName() + ", " + d2.getId());
+					
+				}
+				System.out.println("    ===Intermediates End===");
+			}
+		}
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+		System.out.println("======================================");
 	}
 
 	public void setMapQueryMethods(Map<String, String> mapQueryMethods) {
@@ -163,22 +222,26 @@ public class EndecaQueryProcessor {
 	}
 
 	public void setNavigation(Navigation navigation, Map<String, String[]> parameterMap) {
-		//System.out.println("navigation.getRefinementDimensions().size():" + navigation.getCompleteDimensions().size());
 		DimensionList dl = navigation.getRefinementDimensions();
 		Dimension d = null;
 		for (int i = 0; i < dl.size(); i++) {
 			d = (Dimension) dl.get(i);
-			listDimension.add(new UIDimension(d));
-			//System.out.println(d.getRoot().getName());
+			descriptorDimensions.add(new UIDimension(d));
 		}
-		//System.out.println("navigation.getDescriptorDimensions().size():" + navigation.getDescriptorDimensions().size());
 		dl = navigation.getDescriptorDimensions();
 		d = null;
 		for (int i = 0; i < dl.size(); i++) {
 			d = (Dimension) dl.get(i);
 			associatedDimensions.add(new UIDimension().setUIDimensionBasedOnNavigationState(d));
-			//System.out.println(list1.get(i));
+			//setAncestors(d);
 		}
+	}
+
+	private void setAncestors(Dimension d) {
+		for (int i = 0; i < d.getCompletePath().size(); i++){
+			ancestors.add(((DimVal) d.getCompletePath	().get(i)).getId() + "");
+		}
+		
 	}
 
 	private void print(ENEQueryResults qr) {

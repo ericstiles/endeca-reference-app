@@ -119,7 +119,6 @@
                     </div>
                 </div>
                 <div class="tab-pane active" id="data">
-
                     <div class="container">
                         <div class="row">
                             <div class="col-sm-5 col-md-5 col-lg-4">
@@ -141,7 +140,7 @@
                                                 <c:forEach var="uidimref" items="${uidim.refinements }">
                                                     <ol>
                                                         <a
-                                                            href="${bean.requestUrl}?${bean.getQueryString('N', uidimref.id) }">${uidimref.name }</a>
+                                                            href="${bean.requestUrl}?${bean.getQueryString(uidim.completePath, 'N', uidimref.id) }">${uidimref.name }</a>
                                                         <span class="count">(${uidimref.count})</span>
                                                     </ol>
                                                 </c:forEach>
@@ -157,17 +156,15 @@
                                             <div class="row">
                                                 <div class="col-sm-12 col-md-12 col-lg-12">
                                                     <a
-                                                        href="${bean.requestUrl}?${bean.getQueryString('N', uidim.refinements[fn:length(uidim.refinements)-1].id) }">Remove</a>
-                                                    <c:forEach var="uidimref" items="${uidim.refinements }"
+                                                        href="${bean.requestUrl}?${bean.getQueryString('N', uidim.completePath[fn:length(uidim.completePath)-1].id) }">Remove</a>
+                                                    <c:forEach var="uidimref" items="${uidim.completePath }"
                                                         varStatus="status">
-                                                        ${uidimref.name } 
-                                                        
-                                                        <c:if test="${not empty uidimref.count}">
-                                                        <span class="count">(${uidimref.count})</span>
-                                                        </c:if>
-                                                        
+                                                        ${uidimref.name }
                                                         <c:if
-                                                            test="${status.index <  (fn:length(uidim.refinements) - 1) }"> > </c:if>
+                                                            test="${status.index <  (fn:length(uidim.completePath) - 1) }"> > </c:if>
+                                                        <c:if test="${not empty uidimref.count}">
+                                                            <span class="count">(${uidimref.count})</span>
+                                                        </c:if>
                                                     </c:forEach>
                                                 </div>
                                             </div>
@@ -185,9 +182,7 @@
                                         </div>
                                         <div class="col-sm-12 col-md-12 col-lg-12">
                                             <div class="row">
-
                                                 <%-- Top Pagination Start --%>
-
                                                 <c:set var="p" value="${bean.currentPage}" />
                                                 <%-- current page (1-based) --%>
                                                 <c:set var="l" value="${4 }" />
@@ -196,7 +191,6 @@
                                                 <%-- minimum link range ahead/behind --%>
                                                 <c:set var="t" value="${bean.numberOfPages}" />
                                                 <%-- total amount of pages --%>
-
                                                 <c:set var="begin"
                                                     value="${((p - r) > 0 ? ((p - r) < (t - l + 1) ? (p - r) : (t - l)) : 0) + 1}" />
                                                 <c:set var="end"
@@ -214,7 +208,6 @@
                                                             href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=0 ">first</a></li>
                                                     </c:if>
                                                     <c:forEach begin="${begin}" end="${end}" var="page">
-
                                                         <c:if test="${bean.currentPage == (page - 1) }">
                                                             <c:set value="active" var="cssClass"></c:set>
                                                         </c:if>
@@ -283,7 +276,6 @@
                                                             href="${bean.requestUrl}?${bean.getQueryString('No', '')}&No=0 ">first</a></li>
                                                     </c:if>
                                                     <c:forEach begin="${begin}" end="${end}" var="page">
-
                                                         <c:if test="${bean.currentPage == (page - 1) }">
                                                             <c:set value="active" var="cssClass"></c:set>
                                                         </c:if>
@@ -313,7 +305,6 @@
                 </div>
             </div>
         </div>
-
         <script type="text/javascript">
             jQuery(document).ready(function($) {
                 $('#tabs').tab();

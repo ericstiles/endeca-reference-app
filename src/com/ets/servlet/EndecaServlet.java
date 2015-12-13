@@ -19,7 +19,7 @@ import utils.ParameterUtils;
 /**
  * Servlet implementation class MainServlet
  */
-@WebServlet(description = "EndecaServlet Description", urlPatterns = { "/EndecaServlet" })
+@WebServlet(description = "EndecaServlet Description", urlPatterns = { "/search" })
 public class EndecaServlet extends HttpServlet {
 
 	/* Get actual class name to be printed on */
@@ -43,9 +43,11 @@ public class EndecaServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		log.error("ERROR - LOGGING MESSAGE TEST:" + log.getLevel());
-		log.info("INFO - LOGGING MESSAGE TEST:" + log.getLevel());
-		log.debug("DEBUG - LOGGING MESSAGE TEST:" + log.getLevel());
+		
+//		response.getWriter().append("1. Served at: ").append(request.getContextPath());
+//		log.error("ERROR - LOGGING MESSAGE TEST:" + log.getLevel());
+//		log.info("INFO - LOGGING MESSAGE TEST:" + log.getLevel());
+//		log.debug("DEBUG - LOGGING MESSAGE TEST:" + log.getLevel());
 
 		
 		EndecaQueryProcessor eqp = new EndecaQueryProcessor();
@@ -59,6 +61,7 @@ public class EndecaServlet extends HttpServlet {
 		request.getSession().setAttribute(BEAN, bean);
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(nextJSP);
 		dispatcher.forward(request, response);
+//		response.getWriter().append("1. Served at: ").append(request.getContextPath());
 	}
 
 	private ResponseBean getBean(HttpServletRequest request) {

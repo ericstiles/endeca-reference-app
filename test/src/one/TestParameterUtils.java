@@ -3,12 +3,16 @@
  */
 package one;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+
+import com.ets.model.Refinement;
 
 import utils.ParameterUtils;
 
@@ -97,7 +101,7 @@ public class TestParameterUtils {
 		Map<String, String[]> map1 = new HashMap<String, String[]>();
 		map1.put("N", new String[] { "0", "1" });
 		Map<String, String[]> map2 = new HashMap<String, String[]>();
-		map2.put("N", new String[] { "2", "3" });		
+		map2.put("N", new String[] { "2", "3" });
 		
 		String string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1, map2,"N"));
 		String solution = "N=0+1";
@@ -124,8 +128,10 @@ public class TestParameterUtils {
 	@Test
 	public void testComplementParameterMap_two() {
 		Map<String, String[]> map1 = new HashMap<String, String[]>();
-		map1.put("N", new String[] { "0", "1" });		
-		String string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1,"Ne", "1"));
+		map1.put("N", new String[] { "0", "1" });
+		List<Refinement> refinementList = new ArrayList<Refinement>();
+		
+		String string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1, refinementList, "Ne", "1"));
 		String solution = "Ne=1&N=0+1";
 
 		if (!string.equals(solution)) {
@@ -137,7 +143,7 @@ public class TestParameterUtils {
 		map1.put("N", new String[] { "0", "1" });
 		map1.put("Ne", new String[] { "0"});
 
-		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1,"Ne", "0"));
+		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1, refinementList,"Ne", "0"));
 		solution = "N=0+1";
 
 		if (!string.equals(solution)) {
@@ -149,7 +155,7 @@ public class TestParameterUtils {
 		map1.put("N", new String[] { "0", "1" });
 		map1.put("Ne", new String[] { "0", "1"});
 
-		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1,"Ne", "0"));
+		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1, refinementList,"Ne", "0"));
 		solution = "Ne=1&N=0+1";
 
 		if (!string.equals(solution)) {
@@ -161,7 +167,7 @@ public class TestParameterUtils {
 		map1.put("N", new String[] { "0", "1" });
 		map1.put("Ne", new String[] { "0", "1"});
 
-		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1,"Ne", "2"));
+		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1, refinementList,"Ne", "2"));
 		solution = "Ne=0+1+2&N=0+1";
 
 		if (!string.equals(solution)) {
@@ -172,7 +178,7 @@ public class TestParameterUtils {
 		map1 = new HashMap<String, String[]>();
 		map1.put("N", new String[] { "0"});
 
-		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1,"Ne", "1"));
+		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1, refinementList,"Ne", "1"));
 		solution = "Ne=1&N=0";
 
 		if (!string.equals(solution)) {
@@ -184,7 +190,7 @@ public class TestParameterUtils {
 		map1.put("N", new String[] { "0"});
 		map1.put("Ne", new String[] { "11485", "1"});
 
-		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1,"Ne", "1"));
+		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1, refinementList,"Ne", "1"));
 		solution = "Ne=11485&N=0";
 
 		if (!string.equals(solution)) {
@@ -196,7 +202,7 @@ public class TestParameterUtils {
 		map1.put("N", new String[] { "4294962484"});
 		map1.put("Ne", new String[] { "10093"});
 
-		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1,"N", "4294962484"));
+		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1, refinementList,"N", "4294962484"));
 		solution = "Ne=10093&N=0";
 
 		if (!string.equals(solution)) {
@@ -209,7 +215,7 @@ public class TestParameterUtils {
 		map1.put("Ne", new String[] { "1"});
 		map1.put("No", new String[] { "80"});
 
-		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1,"No", ""));
+		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1, refinementList,"No", ""));
 		solution = "Ne=1&N=0";
 
 		if (!string.equals(solution)) {
@@ -220,7 +226,7 @@ public class TestParameterUtils {
 		map1.put("N", new String[] { "0"});
 		map1.put("Ne", new String[] { "1"});
 
-		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1,"No", ""));
+		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1, refinementList,"No", ""));
 		solution = "Ne=1&N=0";
 
 		if (!string.equals(solution)) {
@@ -232,12 +238,37 @@ public class TestParameterUtils {
 		map1.put("Ne", new String[] { "1"});
 		map1.put("N", new String[] { "3"});
 
-		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1,"Ne", "1"));
+		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1, refinementList,"Ne", "1"));
 		solution = "No=0&N=3";
 
 		if (!string.equals(solution)) {
 			fail("10. Expected:" + solution + ", Returned:" + string);
 		}	
+		/////////////////////////
+		map1 = new HashMap<String, String[]>();
+		map1.put("No", new String[] { "0"});
+		map1.put("Ne", new String[] { "8", "1"});
+		map1.put("N", new String[] { "0", "3", "2", "110"});
+
+		refinementList = new ArrayList<Refinement>();
+		Refinement r = new Refinement();
+
+		r.setId(8);
+		r.setName("Brand-Alpha");
+		refinementList.add(r);
+
+		r = new Refinement();
+		r.setId(110);
+		r.setName("[N-Z]");
+		r.setCount("27143");
+		refinementList.add(r);
+
+		string  = ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(map1, refinementList, "N", "130"));
+		solution = "No=0&Ne=8+1&N=0+3+2+130";
+
+		if (!string.equals(solution)) {
+			fail("11. Expected:" + solution + ", Returned:" + string);
+		}
 	}
 	@Test
 	public void testAdjustParameters_one() {	

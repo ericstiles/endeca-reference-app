@@ -8,14 +8,14 @@ Requires in lib folder following jar files:
 * endeca_navigation-6.4.0.jar
 * jstl-1.2.jar
 
+Example URL: http://localhost:8080/EndecaReferenceApp/EndecaServlet?N=0
+
 Still in progress... Not all functionality is built out nor is code cleaned up.
 
 ## Goals
 
 This app was built to learn how to use the Endeca API.  Initially a command line program was built.  That was moved to
 a web app in order to more easily test different query URLs.
-
-Currently the navigation works to pull records based on the chosen refinements.
 
 ## Application Server
 
@@ -37,7 +37,7 @@ This is tested against:
 This is still a work in progress and the remaining functionality around record aggregation and filtering needs to be built.
 
 Add the following:
-* Fix filtering a multi level hierarchy refinements.
 * log4j
 * configuration settings in a property file
- 
+* code to build a war file
+* add automated UI tests

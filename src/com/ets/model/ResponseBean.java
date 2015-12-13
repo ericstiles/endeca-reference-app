@@ -1,14 +1,18 @@
 package com.ets.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.endeca.navigation.ERecList;
 
 import utils.ParameterUtils;
 
 public class ResponseBean {
-	private int currentPage = 10;
+	private Set<String> ancestors;
+	private int currentPage = 1;
 	private List<UIDimension> dimensions = null;
 	private ERecList eRecList;
 	private String mainContent = "EMPTY";
@@ -25,6 +29,10 @@ public class ResponseBean {
 	private List<UIDimension> refinementsList;
 	private String requestUrl="";
 	private int visiblePageRange=7;
+
+	public Set<String> getAncestors() {
+		return ancestors;
+	}
 
 	public int getCurrentPage() {
 		return currentPage;
@@ -65,9 +73,12 @@ public class ResponseBean {
 	public String getQueryString(){
 		return ParameterUtils.getEndecaQueryString(this.getParameterMap());
 	}
+	public String getQueryString(List<Refinement> refinementsList, String key, String value){
+		return ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(this.getParameterMap(), refinementsList, key, value));
+	}
 
 	public String getQueryString(String key, String value){
-		return ParameterUtils.getEndecaQueryString(ParameterUtils.complementParameterMap(this.getParameterMap(), key, value));
+		return this.getQueryString(new ArrayList<Refinement>(), key, value);
 	}
 
 	public long getRecordCount() {
@@ -93,16 +104,20 @@ public class ResponseBean {
 	public String getRequestUrl() {
 		return requestUrl;
 	}
+
 	public int getVisiblePageRange() {
 		return visiblePageRange ;
 	}
-
+	public void setAncestors(Set<String> ancestors) {
+		this.ancestors = ancestors;
+	}
 	public void setCurrentPage(int currentPage){
 		this.currentPage=currentPage;
 	}
 	public void setNavigation(List<UIDimension> dimensions) {
 		this.dimensions = dimensions;
 	}
+
 	public void setNavigationDescriptorIds(List navDescriptors) {
 		this.navDescriptors = navDescriptors;
 	}
@@ -124,7 +139,6 @@ public class ResponseBean {
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
 	}
-
 	public void setQueryMethods(Map<String, String> mapQueryMethods) {
 		this.mapQueryMethods = mapQueryMethods;
 	}
@@ -132,6 +146,7 @@ public class ResponseBean {
 		this.mapQueryResultsMethods = mapQueryResultsMethods;
 		
 	}
+
 	public void setRecordCount(long recordCount) {
 		this.recordCount = recordCount;
 	}
@@ -142,6 +157,7 @@ public class ResponseBean {
 	public void setRecordsPerPage(int recordsPerPage) {
 		this.recordsPerPage=recordsPerPage;
 	}
+
 	public void setReferringURL(String referer) {
 		this.referringURL = referer;
 		
@@ -151,14 +167,13 @@ public class ResponseBean {
 		this.refinementsList = refinementsList;
 		
 	}
-
 	public void setRequestParameters(String parameters) {
 		this.parameters = parameters;
 	}
-
 	public void setRequestUrl(String requestUrl) {
 		this.requestUrl = requestUrl;
 	}
+
 	public void setVisiblePageRange(int visiblePageRange){
 		this.visiblePageRange=visiblePageRange;
 	}
@@ -201,5 +216,5 @@ public class ResponseBean {
 		builder.append(visiblePageRange);
 		builder.append("]");
 		return builder.toString();
-	}	
+	}
 }

@@ -8,6 +8,10 @@ Requires in lib folder following jar files:
 * endeca_navigation-6.4.0.jar
 * jstl-1.2.jar
 
+Below is an example screenshot
+
+![Screenshot of application](https://flic.kr/p/BAMoHa)
+
 Example URL: http://localhost:8080/EndecaReferenceApp/EndecaServlet?N=0
 
 Still in progress... Not all functionality is built out nor is code cleaned up.

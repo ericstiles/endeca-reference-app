@@ -8,13 +8,11 @@ Requires in lib folder following jar files:
 * endeca_navigation-6.4.0.jar
 * jstl-1.2.jar
 
+Example URL: http://localhost:8080/EndecaReferenceApp/EndecaServlet?N=0
+
 Below is an example screenshot
 
 ![Screenshot of application](https://cloud.githubusercontent.com/assets/972864/11772468/23d510cc-a1e2-11e5-948c-e0632e3c816f.png)
-
-Example URL: http://localhost:8080/EndecaReferenceApp/EndecaServlet?N=0
-
-Still in progress... Not all functionality is built out nor is code cleaned up.
 
 ## Goals
 
@@ -45,3 +43,4 @@ Add the following:
 * configuration settings in a property file
 * code to build a war file
 * add automated UI tests
+* general code clean up

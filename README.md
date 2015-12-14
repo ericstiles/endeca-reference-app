@@ -10,7 +10,7 @@ Requires in lib folder following jar files:
 
 Below is an example screenshot
 
-![Screenshot of application](http://s1072.photobucket.com/user/eric-stiles/media/github/Screenshot%20at%20Dec%2013%2018-29-03_zpsuoa8lftd.png.html)
+![Screenshot of application](http://s1072.photobucket.com/user/eric-stiles/media/github/Screenshot%20at%20Dec%2013%2018-29-03_zpsuoa8lftd.png.html][IMG]http://i1072.photobucket.com/albums/w369/eric-stiles/github/Screenshot%20at%20Dec%2013%2018-29-03_zpsuoa8lftd.png)
 
 Example URL: http://localhost:8080/EndecaReferenceApp/EndecaServlet?N=0
 
